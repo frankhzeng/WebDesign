@@ -1,3 +1,7 @@
+<!-- 
+dataset: https://www.kaggle.com/datasets/marzenah/azlyrics-recorded-songs-with-lyrics
+the dataset ended up being ~50mb, so I cut it down to 25 elements for testing 
+-->
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -6,6 +10,7 @@
     <meta name="description" content="list of a bunch of songs">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artist Name: H</title>
+    <link rel="icon" type="image/png" href="./img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
@@ -23,7 +28,7 @@
       </button>
       <div class="topnav menu">
          <div id="links">
-            <a href="#"><i class="home material-icons">home</i></a>
+            <a href="#" class="home"><i class="home material-icons">home</i></a>
             <a href="#a">A</a>
             <a href="#b">B</a>
             <a href="#c">C</a>
@@ -52,8 +57,9 @@
             <a href="#z">Z</a>
             <a href="##">#</a>
          </div>
-         <input type="text" placeholder="Search...">
-
+         <form id="form">
+            <input id="input" type="text" placeholder="Search...">
+         </form>
        </div>
 
    </nav> 

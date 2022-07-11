@@ -1,5 +1,6 @@
 'use strict';
 
+//toggling menu function ======================================
 let parent = document.querySelector("#songs");
 const menu = document.querySelector(".menu");
 const menuItems = document.querySelectorAll(".menu a");
@@ -12,21 +13,13 @@ function toggleMenu() {
         menu.classList.remove("showMenu");
         closeIcon.style.display = "none";
         menuIcon.style.display = "block";
-        menuItems.style.display = "none";
     } else {
         menu.classList.add("showMenu");
         closeIcon.style.display = "block";
         menuIcon.style.display = "none";
-        menuItems.style.display = "block";
     }
 }
-
-hamburger.addEventListener("click", toggleMenu);
-menuItems.forEach( 
-    function(menuItem) { 
-      menuItem.addEventListener("click", toggleMenu);
-    }
-  );
+//add an element to div ==============================================
 function addElement(element) {
     //add div
     let div = document.createElement("div");
@@ -53,35 +46,145 @@ function addElement(element) {
         }
         let img = document.createElement("img");
         img.src = response.results[0].artworkUrl100;
-        img.style.width = "10%";
-        img.style.height = "50%";
+        img.style.width = "50%";
         img.style.display = "inline-block";
         img.id = "image";
         div.appendChild(img);
-        console.log(img);
         
     })
     url.textContent = "Lyrics >>"
     div.appendChild(titleP);
     div.appendChild(artistP);
     div.appendChild(url);
+    div.style.width = "40%";
     parent.appendChild(div);
 }
-fetch("./data/data.json")
-    .then(response => {
-        return response.json();
-    }).then(response =>{
-        for (let i = 0; i < 15; i++) {
-            addElement(response[i]);
-        }
-    });
+//load home page =================================================
+function loadRecents() {
+    while (parent.firstChild) {
+        parent.removeChild(parent.lastChild);
+    }
+    let title = document.querySelector(".songs-container h2");
+    title.textContent = "Most Recent Songs: ";
+    fetch("./data/data.json")
+        .then(response => {
+            return response.json();
+        }).then(response =>{
+            response.sort((a, b) => {
+                return a.Year > b.Year;
+            })
+            for (let i = 0; i < 10; i++) {
+                addElement(response[i]); //load most recent
+            }
+        });
+}
 
+//to load inital page
+loadRecents();
 
+//convenience function to render data =================================
 function renderData(arr) {
     while (parent.firstChild) {
         parent.removeChild(parent.lastChild);
+    }
+    if (arr.length == 0) {
+        let pl = document.createElement("p");
+        let div = document.createElement("div");
+
+        pl.textContent = "No results found";
+        div.appendChild(pl);
+        parent.appendChild(div);
+
     }
     for (let i = 0; i < arr.length; i++) {
         addElement(arr[i]);
     }
 }
+//toggling menu, and filtering by button =============================
+hamburger.addEventListener("click", toggleMenu);
+menuItems.forEach( 
+    function(menuItem) { 
+      menuItem.addEventListener("click", toggleMenu);
+      menuItem.addEventListener("click", x => {
+        if (menuItem.classList.contains("home")) {
+            loadRecents();
+            return;
+        }
+
+        let char1 = menuItem.textContent.charAt(0);
+        let title = document.querySelector(".songs-container h2");
+        title.textContent = "Songs starting with " + char1 + ": ";
+        fetch("./data/data.json")
+            .then(response => response.json())
+            .then(response => {
+                if (char1 == "#") {
+                    response = response.filter(obj => {
+                        let char2 = obj.Song_Title.charAt(0);
+
+                        return !(/[a-zA-Z]/).test(char2);
+                    });
+
+                } else {
+                    response = response.filter(obj => {
+                        let char2 = obj.Song_Title.charAt(0);
+                        return (char1 === char2) || (char1.toUpperCase() == char2) || (char1.toLowerCase() == char2);
+                    });
+                }
+                response.sort((a, b) => {
+                    const at = a.Song_Title;
+                    const bt = b.Song_Title;
+                    if (at < bt) {
+                        return -1;
+                    }
+                    if (at > bt) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                renderData(response);
+            })
+      });
+    }
+  );
+
+
+//process search bar ========================================
+const form = document.querySelector("#form");
+const input = document.querySelector("#input");
+
+form.addEventListener("submit", function() {
+    fetch("./data/data.json")
+        .then(response => response.json())
+        .then(response => {
+            const content = input.value.toLowerCase();
+            let title = document.querySelector(".songs-container h2");
+            title.textContent = "Search Results for " + content + ": ";
+            response = response.filter(obj => {
+                let artistName = obj.Artist_Name.toLowerCase();
+                let songTitle = obj.Song_Title.toLowerCase();
+                if (artistName.includes(content)) {
+                    return true;
+                }
+                if (songTitle.includes(content)) {
+                    return true;
+                }
+
+                return false;
+            })
+            response.sort((a, b) => {
+                const at = a.Song_Title;
+                const bt = b.Song_Title;
+                if (at < bt) {
+                    return -1;
+                }
+                if (at > bt) {
+                    return 1;
+                }
+                return 0;
+            });
+            renderData(response);
+            toggleMenu();
+        });
+})
+
+
