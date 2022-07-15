@@ -154,37 +154,37 @@ const input = document.querySelector("#input");
 
 form.addEventListener("submit", function() {
     fetch("./data/data.json")
-        .then(response => response.json())
-        .then(response => {
-            const content = input.value.toLowerCase();
-            let title = document.querySelector(".songs-container h2");
-            title.textContent = "Search Results for " + content + ": ";
-            response = response.filter(obj => {
-                let artistName = obj.Artist_Name.toLowerCase();
-                let songTitle = obj.Song_Title.toLowerCase();
-                if (artistName.includes(content)) {
-                    return true;
-                }
-                if (songTitle.includes(content)) {
-                    return true;
-                }
+    .then(response => response.json())
+    .then(response => {
+        const content = input.value.toLowerCase();
+        let title = document.querySelector(".songs-container h2");
+        title.textContent = "Search Results for " + content + ": ";
+        response = response.filter(obj => {
+            let artistName = obj.Artist_Name.toLowerCase();
+            let songTitle = obj.Song_Title.toLowerCase();
+            if (artistName.includes(content)) {
+                return true;
+            }
+            if (songTitle.includes(content)) {
+                return true;
+            }
 
-                return false;
-            })
-            response.sort((a, b) => {
-                const at = a.Song_Title;
-                const bt = b.Song_Title;
-                if (at < bt) {
-                    return -1;
-                }
-                if (at > bt) {
-                    return 1;
-                }
-                return 0;
-            });
-            renderData(response);
-            toggleMenu();
+            return false;
+        })
+        response.sort((a, b) => {
+            const at = a.Song_Title;
+            const bt = b.Song_Title;
+            if (at < bt) {
+                return -1;
+            }
+            if (at > bt) {
+                return 1;
+            }
+            return 0;
         });
+        renderData(response);
+        toggleMenu();
+    });
 })
 
 
