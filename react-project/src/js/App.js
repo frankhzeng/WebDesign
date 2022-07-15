@@ -1,9 +1,12 @@
 import '../style.css';
-import Navbar from './navbar.js';
+import Songs from './Songs.js'
+import Head from './head';
+
 function App() {
   return (
-    
-    <Navbar/>    
+    <>
+      <Songs/>
+      </>
   );
 }
 

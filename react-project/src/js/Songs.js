@@ -1,16 +1,23 @@
 import { Recents } from "./AlterData";
-export let SongList = [];
-Recents();
-export function songs() {
+import Navbar from './navbar.js';
+
+export let SongList = Recents();
+
+export default function songs() {
     return (
-    <body>
-        <div class="titling">
+    <div id="body">
+        <Navbar/>
+        <div className  ="titling">
             <h1>H</h1>
             <p>Search, sort, or scroll through over 33,000 songs, all created by artists whose names start with an H.</p>
         </div>
-        <div class="songs-container">
-            {SongList}
+        <div className="songs-container">
+            <h2>stuff</h2>
+            <div id="songs">
+                {SongList}
+            </div>
         </div>
-    </body>
+    </div>
     );
 }
+//
